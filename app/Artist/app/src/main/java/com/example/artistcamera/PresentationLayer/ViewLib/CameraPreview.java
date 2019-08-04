@@ -346,6 +346,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                     width, (height + scaledChildHeight) / 2);
             scaleEvent=(scaledChildHeight-height)/2;
         }
+
     }
 
     /*

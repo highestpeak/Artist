@@ -4,17 +4,105 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".PresentationLayer.PhotoActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="1">
+        <ImageView
+            android:id="@+id/onephoto_backtogallery"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/ic_keyboard_arrow_left"/>
+        <ImageView
+            android:id="@+id/onephoto_gallery"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/onephoto_backtogallery"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/ic_photo_album"/>
+        <ImageView
+            android:id="@+id/onephoto_close"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_close_black"/>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="20dp">
+        android:padding="20dp"
+        android:layout_weight="6">
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="1">
+        <ImageView
+            android:id="@+id/onephoto_photo_info"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/ic_info_outline_black"/>
+
+        <ImageView
+            android:id="@+id/onephoto_photo_new_style"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/onephoto_photo_info"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/ic_switch_pattern"/>
+
+        <ImageView
+            android:id="@+id/onephoto_photo_poem"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/onephoto_photo_new_style"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/ic_poem"/>
+
+        <Button
+            android:id="@+id/onephoto_photo_newscore"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/onephoto_photo_select"
+            android:layout_marginRight="10dp"
+            android:background="#06BD17"
+            android:text="Evaluate"
+            android:textColor="#fff"
+            android:typeface="serif"
+            />
+
+        <Button
+            android:id="@+id/onephoto_photo_select"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:background="#06BD17"
+            android:text="Select"
+            android:textColor="#fff"
+            android:typeface="serif"
+            />
+    </RelativeLayout>
 
 
 </LinearLayout>

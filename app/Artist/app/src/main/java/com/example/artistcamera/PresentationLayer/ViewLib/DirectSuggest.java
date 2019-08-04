@@ -34,7 +34,7 @@ public class DirectSuggest  extends AppCompatImageView {
         this.context = context;
         //画笔设置
         suggestPaint = new Paint();
-        suggestPaint.setColor(Color.GREEN);
+        suggestPaint.setColor(Color.YELLOW);
         suggestPaint.setStyle(Paint.Style.STROKE);
         suggestPaint.setStrokeWidth(3);
     }
@@ -92,6 +92,7 @@ public class DirectSuggest  extends AppCompatImageView {
         bottom=(int)(centerPoint.y+rectSize/2);
         setSuggestDirect(suggestDirect);
         setCenterPoint(centerPoint);
+        postInvalidate();
     }
 
     private Integer linePadding=2;
@@ -160,8 +161,8 @@ public class DirectSuggest  extends AppCompatImageView {
             case NONE:
                 break;
         }
-        if(xToCenter!=centerPoint.x && yToCenter!=centerPoint.y){
-            canvas.drawLine(left,top,centerPoint.x,centerPoint.y,suggestPaint);
+        if(xToCenter!=centerPoint.x || yToCenter!=centerPoint.y){
+            canvas.drawLine(xToCenter,yToCenter,centerPoint.x,centerPoint.y,suggestPaint);
         }
     }
 

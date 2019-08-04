@@ -3,10 +3,13 @@ package com.example.artistcamera.PresentationLayer;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Point;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -66,6 +69,7 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
      * field use
      */
     private CameraPreview mPreview;
+    private Point pointCenter=new Point();
     private ProcessWithThreadPool processWithThreadPool=new ProcessWithThreadPool();
     private FocusRect focusRect;
     private DirectSuggest directSuggest;
@@ -90,9 +94,10 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
         preview =findViewById(R.id.camera_preview);
         preview.addView(mPreview);
         mPreview.setFocusRect(focusRect);
+        mPreview.setCenter(pointCenter);
         mPreview.setProcessFrameThreadPool(processWithThreadPool);
         preview.addView(focusRect);
-//        preview.addView(directSuggest);
+        preview.addView(directSuggest);
 
 
         SettingsFragment.passCamera(mPreview.getCameraInstance());
@@ -199,19 +204,18 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
     /*
      * 回调
      */
-    private long timeMark=System.currentTimeMillis();
+    private long timeMark;
     @Override
     public void getScore(String scoreText) {
         scoreTextView.post(new Runnable() {
             @Override
             public void run() {
                 scoreTextView.setText(scoreText);
-                //centerPoint size direct
             }
         });
-        if(System.currentTimeMillis()-timeMark>=2000){
-            directSuggest.setSuggest(mPreview.getCenter(),20,
-                    DirectSuggest.SUGGEST_DIRECT.getRandom());
+        long yoSee=System.currentTimeMillis()-timeMark;
+        if(System.currentTimeMillis()-timeMark>=1000 && mPreview!=null){
+            directSuggest.setSuggest(mPreview.getCenter(),200,DirectSuggest.SUGGEST_DIRECT.getRandom());
             timeMark=System.currentTimeMillis();
         }
 
