@@ -2,6 +2,9 @@ package com.example.artistcamera.PresentationLayer.Presenter;
 
 import android.util.Log;
 
+import com.example.artistcamera.DataLayer.ScoreGetHelp;
+import com.example.artistcamera.PresentationLayer.ScoreCallBack;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -30,8 +33,16 @@ public class ProcessWithThreadPool {
         });
     }
 
+    private ScoreGetHelp scoreGetHelp=new ScoreGetHelp();
     private void processFrame(byte[] frameData) {
         //上传服务器
-        Log.i(TAG, "test");
+//        Log.i(TAG, "test");
+        scoreCallBack.getScore(scoreGetHelp.scoreReturn());
+    }
+
+    private ScoreCallBack scoreCallBack;
+
+    public void setScoreCallBack(ScoreCallBack scoreCallBack) {
+        this.scoreCallBack = scoreCallBack;
     }
 }

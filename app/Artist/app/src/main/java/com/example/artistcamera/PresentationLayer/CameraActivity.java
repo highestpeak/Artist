@@ -2,13 +2,11 @@ package com.example.artistcamera.PresentationLayer;
 
 import android.Manifest;
 import android.content.Intent;
-import android.hardware.Camera;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,12 +14,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.artistcamera.DataLayer.ScoreGetHelp;
 import com.example.artistcamera.PresentationLayer.Presenter.ProcessWithThreadPool;
 import com.example.artistcamera.PresentationLayer.ViewLib.CameraPreview;
+import com.example.artistcamera.PresentationLayer.ViewLib.DirectSuggest;
 import com.example.artistcamera.PresentationLayer.ViewLib.FocusRect;
 import com.example.artistcamera.PresentationLayer.ViewLib.SettingsFragment;
 import com.example.artistcamera.R;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +30,7 @@ import butterknife.OnClick;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class CameraActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
+public class CameraActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks,ScoreCallBack{
     /**
      * view bind
      */
@@ -67,6 +68,7 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
     private CameraPreview mPreview;
     private ProcessWithThreadPool processWithThreadPool=new ProcessWithThreadPool();
     private FocusRect focusRect;
+    private DirectSuggest directSuggest;
     //设定分数返回回调
     //===
 
@@ -77,7 +79,10 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
         setContentView(R.layout.activity_camera);
         ButterKnife.bind(this);
         focusRect=new FocusRect(this);
+        processWithThreadPool.setScoreCallBack(this::getScore);
+        directSuggest=new DirectSuggest(this);
         startPreview();
+//        new ScoreGetHelp();
     }
 
     public void startPreview() {
@@ -87,6 +92,7 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
         mPreview.setFocusRect(focusRect);
         mPreview.setProcessFrameThreadPool(processWithThreadPool);
         preview.addView(focusRect);
+//        preview.addView(directSuggest);
 
 
         SettingsFragment.passCamera(mPreview.getCameraInstance());
@@ -126,7 +132,9 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
     }
 
 
-    //获取权限
+   /**
+    * 权限
+    */
     private void getPermission() {
         if (EasyPermissions.hasPermissions(this, perms)) {
             //已经打开权限
@@ -168,6 +176,9 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
         }
     }
 
+    /**
+     * click
+     */
     @OnClick({R.id.img_gallery_switch, R.id.img_take_photo, R.id.img_camera_switch})
     public void onViewClicked(View view) {
         Intent intent;
@@ -185,4 +196,24 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
         }
     }
 
+    /*
+     * 回调
+     */
+    private long timeMark=System.currentTimeMillis();
+    @Override
+    public void getScore(String scoreText) {
+        scoreTextView.post(new Runnable() {
+            @Override
+            public void run() {
+                scoreTextView.setText(scoreText);
+                //centerPoint size direct
+            }
+        });
+        if(System.currentTimeMillis()-timeMark>=2000){
+            directSuggest.setSuggest(mPreview.getCenter(),20,
+                    DirectSuggest.SUGGEST_DIRECT.getRandom());
+            timeMark=System.currentTimeMillis();
+        }
+
+    }
 }

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera;
@@ -109,6 +110,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         预览分辨率的变化的触发
          */
         adjustDisplayRatio(rotation);
+
+        center.x=(int) (this.getX()+this.getWidth()/2);
+        center.y=(int) (this.getY()+this.getHeight()/2);
     }
 
     public Camera getCameraInstance() {
@@ -167,9 +171,13 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     /*
     触摸事件
      */
+    private Integer scaleEvent=null;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Log.d(TAG,"touched");
+        if (scaleEvent!=null){
+            event.setLocation(event.getX(),event.getY()-scaleEvent);
+        }
         if (event.getPointerCount() == 1) {
 //            handleFocus(event, mCamera);
 //            drawRect(event.getX(),event.getY());
@@ -232,13 +240,25 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void onPreviewFrame(byte[] data, Camera camera)  {
-        Log.i(TAG, "processing frame");
+//        Log.i(TAG, "processing frame");
         try {
             processFrameThreadPool.post(data);
         } catch (Exception e) {
             Log.d(TAG, "processing frame error "+e.getMessage());
         }
     }
+
+    public Point getCenter() {
+        return center;
+    }
+
+    public void setCenter(Point center) {
+        this.center = center;
+    }
+
+    private Point center;
+
+
 
     /*
     相机设置
@@ -313,16 +333,18 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         /*
         通过layout()将新的SurfaceView的位置应用到布局中，完成纵横比的调整。
+        可以通过layout设置不可见区域大小
          */
-        if (width * previewHeight > height * previewWidth) {
+        if (width * previewHeight <= height * previewWidth) {
             final int scaledChildWidth = previewWidth * height / previewHeight;
-
             layout((width - scaledChildWidth) / 2, 0,
                     (width + scaledChildWidth) / 2, height);
+            scaleEvent=(scaledChildWidth-width)/2;
         } else {
             final int scaledChildHeight = previewHeight * width / previewWidth;
             layout(0, (height - scaledChildHeight) / 2,
                     width, (height + scaledChildHeight) / 2);
+            scaleEvent=(scaledChildHeight-height)/2;
         }
     }
 
