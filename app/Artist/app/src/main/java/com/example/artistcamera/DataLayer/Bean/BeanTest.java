@@ -1,4 +1,4 @@
-package com.example.artistcamera.DataLayer;
+package com.example.artistcamera.DataLayer.Bean;
 
 public class BeanTest {
     private String login;

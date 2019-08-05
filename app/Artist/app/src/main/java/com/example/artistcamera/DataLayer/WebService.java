@@ -1,14 +1,38 @@
 package com.example.artistcamera.DataLayer;
 
+import com.example.artistcamera.DataLayer.Bean.EvaluateJsonBean;
+import com.example.artistcamera.DataLayer.Bean.PoemBean;
+import com.example.artistcamera.DataLayer.Bean.StyleJsonBean;
+
+import java.util.Map;
+
+import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.PartMap;
 
 public interface WebService {
-    @GET("movie/top250")
-    Call<BeanTest> getTop250(@Query("start") int start, @Query("count")  int count);
+    /**
+     * ai写诗
+     */
+    @Multipart
+    @POST("upload")
+    Call<PoemBean> poemOfImage(@PartMap Map<String, RequestBody> requestBodyMap);
 
-    @GET("/users/{user}")
-    Call<BeanTest> repo(@Path("user") String user);
+    /**
+     * 风格迁移
+     * TODO: 风格迁移url
+     */
+    @Multipart
+    @POST("")
+    Call<StyleJsonBean> styleMigration(@PartMap Map<String, RequestBody> requestBodyMap);
+
+    /*
+    * 评分
+    * TODO: 评分url
+     */
+    @Multipart
+    @POST("up_photo")
+    Call<EvaluateJsonBean> evaluate(@PartMap Map<String, RequestBody> requestBodyMap);
 }

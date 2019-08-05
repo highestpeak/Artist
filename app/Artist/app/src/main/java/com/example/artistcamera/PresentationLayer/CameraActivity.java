@@ -92,6 +92,7 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
     public void startPreview() {
         mPreview = new CameraPreview(this);
         preview =findViewById(R.id.camera_preview);
+        preview.removeAllViews();
         preview.addView(mPreview);
         mPreview.setFocusRect(focusRect);
         mPreview.setCenter(pointCenter);
@@ -206,18 +207,20 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
      */
     private long timeMark;
     @Override
-    public void getScore(String scoreText) {
+    public void getScore(String scoreText, DirectSuggest.SUGGEST_DIRECT suggest_direct) {
         scoreTextView.post(new Runnable() {
             @Override
             public void run() {
                 scoreTextView.setText(scoreText);
+                if(mPreview!=null){
+                    mPreview.setCurrScore(scoreText);
+                }
             }
         });
         long yoSee=System.currentTimeMillis()-timeMark;
         if(System.currentTimeMillis()-timeMark>=1000 && mPreview!=null){
-            directSuggest.setSuggest(mPreview.getCenter(),200,DirectSuggest.SUGGEST_DIRECT.getRandom());
+            directSuggest.setSuggest(mPreview.getCenter(),200,suggest_direct);
             timeMark=System.currentTimeMillis();
         }
-
     }
 }

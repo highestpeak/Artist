@@ -1,10 +1,13 @@
 package com.example.artistcamera.PresentationLayer.Presenter;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.example.artistcamera.DataLayer.ScoreGetHelp;
 import com.example.artistcamera.PresentationLayer.ScoreCallBack;
+import com.example.artistcamera.PresentationLayer.ViewLib.DirectSuggest.SUGGEST_DIRECT;
 
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -24,7 +27,7 @@ public class ProcessWithThreadPool {
         mThreadPool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, KEEP_ALIVE_TIME, TIME_UNIT, workQueue);
     }
 
-    public synchronized void post(final byte[] frameData) {
+    public synchronized void post(final Bitmap frameData) {
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -34,10 +37,13 @@ public class ProcessWithThreadPool {
     }
 
     private ScoreGetHelp scoreGetHelp=new ScoreGetHelp();
-    private void processFrame(byte[] frameData) {
+    private void processFrame(Bitmap frameData) {
         //上传服务器
 //        Log.i(TAG, "test");
-        scoreCallBack.getScore(scoreGetHelp.scoreReturn());
+        Map<String,Object> rs=  scoreGetHelp.scoreReturn(frameData);
+        String score=(String) rs.get("score");
+        SUGGEST_DIRECT suggest_direct= (SUGGEST_DIRECT)rs.get("suggest_direct");
+        scoreCallBack.getScore(score,suggest_direct);
     }
 
     private ScoreCallBack scoreCallBack;

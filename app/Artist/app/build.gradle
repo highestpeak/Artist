@@ -54,4 +54,7 @@ dependencies {
     // Okhttp库
 
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile project(':library')
+
+    implementation 'org.litepal.android:java:3.0.0'
 }

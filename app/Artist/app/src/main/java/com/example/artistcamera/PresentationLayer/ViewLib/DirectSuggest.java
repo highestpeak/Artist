@@ -97,7 +97,7 @@ public class DirectSuggest  extends AppCompatImageView {
 
     private Integer linePadding=2;
     private void drawSuggest(Canvas canvas) {
-        if(centerPoint==null){
+        if(centerPoint==null || suggestDirect==null){
             return;
         }
         int xToCenter=centerPoint.x;

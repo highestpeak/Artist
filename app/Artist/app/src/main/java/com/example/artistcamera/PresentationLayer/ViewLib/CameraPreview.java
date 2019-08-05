@@ -4,14 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.ImageFormat;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
+import android.media.ExifInterface;
 import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -30,8 +34,11 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.example.artistcamera.DataLayer.Bean.PhotoInfo;
 import com.example.artistcamera.PresentationLayer.Presenter.ProcessWithThreadPool;
+import com.example.artistcamera.Util.WebHelp;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -148,6 +155,12 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         takePicture(null);
     }
 
+    private String currScore=null;
+
+    public void setCurrScore(String currScore) {
+        this.currScore = currScore;
+    }
+
     public void takePicture(final ImageView view) {
         //takePicture()是一个异步过程
         mCamera.takePicture(null, null, new Camera.PictureCallback() {
@@ -159,6 +172,18 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                         @Override
                         public void run() {
                             view.setImageURI(outputMediaFileUri);
+                            //图片保存到数据库
+                            Thread thread=new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    PhotoInfo photoInfo=new PhotoInfo();
+                                    String uriToIn=outputMediaFileUri.toString();
+                                    photoInfo.setUri(uriToIn);
+                                    photoInfo.setScore(currScore);
+                                    photoInfo.save();
+                                }
+                            });
+                            thread.run();
                         }
                     });
 
@@ -241,11 +266,21 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void onPreviewFrame(byte[] data, Camera camera)  {
 //        Log.i(TAG, "processing frame");
-        try {
-            processFrameThreadPool.post(data);
+        Camera.Size size = mCamera.getParameters().getPreviewSize();
+        try{
+            YuvImage image = new YuvImage(data, ImageFormat.NV21, size.width, size.height, null);
+            if(image!=null){
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                image.compressToJpeg(new Rect(0, 0, size.width, size.height), 80, stream);
+
+                Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
+                processFrameThreadPool.post(bmp);
+                stream.close();
+            }
         } catch (Exception e) {
             Log.d(TAG, "processing frame error "+e.getMessage());
         }
+
     }
 
     public Point getCenter() {
@@ -333,14 +368,16 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         /*
         通过layout()将新的SurfaceView的位置应用到布局中，完成纵横比的调整。
-        可以通过layout设置不可见区域大小
+        TODO 可以通过layout设置不可见区域大小
          */
-        if (width * previewHeight <= height * previewWidth) {
+
+
+        if (width * previewHeight <= height * previewWidth) {//竖屏
             final int scaledChildWidth = previewWidth * height / previewHeight;
             layout((width - scaledChildWidth) / 2, 0,
                     (width + scaledChildWidth) / 2, height);
             scaleEvent=(scaledChildWidth-width)/2;
-        } else {
+        } else {//横屏
             final int scaledChildHeight = previewHeight * width / previewWidth;
             layout(0, (height - scaledChildHeight) / 2,
                     width, (height + scaledChildHeight) / 2);
