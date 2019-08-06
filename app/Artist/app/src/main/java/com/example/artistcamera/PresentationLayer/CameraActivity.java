@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.artistcamera.DataLayer.ScoreGetHelp;
 import com.example.artistcamera.PresentationLayer.Presenter.ProcessWithThreadPool;
 import com.example.artistcamera.PresentationLayer.ViewLib.CameraPreview;
@@ -86,6 +87,10 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
         processWithThreadPool.setScoreCallBack(this::getScore);
         directSuggest=new DirectSuggest(this);
         startPreview();
+        Glide.with(this)
+                .load(PhotoActivity.getNewestPhoto(this).get(0))
+                .fitCenter()
+                .into(gallerySwitchButon);
 //        new ScoreGetHelp();
     }
 

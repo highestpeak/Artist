@@ -173,20 +173,19 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                         public void run() {
                             view.setImageURI(outputMediaFileUri);
                             //图片保存到数据库
-                            Thread thread=new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    PhotoInfo photoInfo=new PhotoInfo();
-                                    String uriToIn=outputMediaFileUri.toString();
-                                    photoInfo.setUri(uriToIn);
-                                    photoInfo.setScore(currScore);
-                                    photoInfo.save();
-                                }
-                            });
-                            thread.run();
+//                            Thread thread=new Thread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    PhotoInfo photoInfo=new PhotoInfo();
+//                                    String uriToIn=outputMediaFileUri.toString();
+//                                    photoInfo.setUri(uriToIn);
+//                                    photoInfo.setScore(currScore);
+//                                    photoInfo.save();
+//                                }
+//                            });
+//                            thread.run();
                         }
                     });
-
                 }
                 camera.startPreview();
             }
@@ -539,12 +538,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             //通过io流的方式来压缩保存图片
             fos.write(data);
             fos.close();
-            //把文件插入到系统图库
-            MediaStore.Images.Media.insertImage(context.getContentResolver(), mediaFile.getAbsolutePath(), fileName, null);
+//            //把文件插入到系统图库
+//            MediaStore.Images.Media.insertImage(context.getContentResolver(), mediaFile.getAbsolutePath(), fileName, null);
             outputMediaFileUri = Uri.fromFile(mediaFile);
-            //保存图片后发送广播通知更新数据库
-            Uri uri = Uri.fromFile(mediaFile);
-            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+//            //保存图片后发送广播通知更新数据库
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, outputMediaFileUri));
             return true;
         } catch (IOException e) {
             e.printStackTrace();

@@ -2,6 +2,7 @@ package com.example.artistcamera.PresentationLayer;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.ExifInterface;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -51,10 +53,10 @@ public class PhotoActivity extends AppCompatActivity {
     @BindView(R.id.onephoto_photo_poem)
     ImageView onephotoPhotoPoem;
     @BindView(R.id.onephoto_photo_newscore)
-    Button onephotoPhotoNewscore;
+    ImageView onephotoPhotoNewscore;
 
     private ViewPager mPager;
-    private int currPosition=-1;
+//    private int mPager.getCurrentItem()=-1;
     private ArrayList<Uri> uriArrayList;
     private PhotoInfo photoInfo=null;
 
@@ -65,7 +67,7 @@ public class PhotoActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setPageMargin((int) (getResources().getDisplayMetrics().density * 15));
-        uriArrayList = getNewestPhoto();
+        uriArrayList = getNewestPhoto(this);
 
         mPager.setAdapter(new PagerAdapter() {
             @Override
@@ -81,7 +83,6 @@ public class PhotoActivity extends AppCompatActivity {
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
                 ImageView imageView = new ImageView(getApplicationContext());
-                currPosition=position;
                 photoInfo=null;
                 Glide.with(PhotoActivity.this)
                         .load(uriArrayList.get(position))
@@ -98,7 +99,6 @@ public class PhotoActivity extends AppCompatActivity {
                 Glide.clear((View) object);
             }
         });
-
     }
 
     /**
@@ -106,7 +106,7 @@ public class PhotoActivity extends AppCompatActivity {
      *
      * @return String
      */
-    public ArrayList<Uri> getNewestPhoto() {
+    public static ArrayList<Uri> getNewestPhoto(Context context) {
 
         ArrayList<String> img_path = new ArrayList<>();
         ArrayList<Uri> img_uri = new ArrayList<>();
@@ -114,7 +114,7 @@ public class PhotoActivity extends AppCompatActivity {
         // 获取SDcard卡的路径
         String sdcardPath = Environment.getExternalStorageDirectory().toString();
 
-        ContentResolver mContentResolver = PhotoActivity.this.getContentResolver();
+        ContentResolver mContentResolver = context.getContentResolver();
         Cursor mCursor = mContentResolver.query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 new String[]{MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA},
@@ -162,7 +162,7 @@ public class PhotoActivity extends AppCompatActivity {
                 break;
             case R.id.onephoto_photo_info:
                 try{
-                    String uriToFind=uriArrayList.get(currPosition).toString();
+                    String uriToFind=uriArrayList.get(mPager.getCurrentItem()).toString();
                     photoInfo= LitePal.where("uri = ? ",uriToFind).find(PhotoInfo.class).get(0);
                 }catch (Exception e){
                     Log.d(TAG,"error query photo info ; msg : " +e.getMessage());
@@ -173,7 +173,7 @@ public class PhotoActivity extends AppCompatActivity {
                 intent = new Intent(this, StyleMigrationActivity.class);
                 // 在Intent中传递数据
                 intent.putExtra("from", "onePhoto");
-                intent.putExtra("photoUri", uriArrayList.get(currPosition).toString());
+                intent.putExtra("photoUri", uriArrayList.get(mPager.getCurrentItem()).toString());
                 // 启动Intent
                 startActivity(intent);
                 break;
@@ -189,7 +189,7 @@ public class PhotoActivity extends AppCompatActivity {
     private void processShowPhotoInfo() {
         //photoInfo
         ExifInterface exifInterface = null;
-        String path=UriPhotoHelp.getRealPathFromUri(this,uriArrayList.get(currPosition));
+        String path=UriPhotoHelp.getRealPathFromUri(this,uriArrayList.get(mPager.getCurrentItem()));
         try {
             exifInterface = new ExifInterface(path);
         } catch (IOException e) {
@@ -202,7 +202,6 @@ public class PhotoActivity extends AppCompatActivity {
         String kuan = exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
         String jiaodu = exifInterface.getAttribute(ExifInterface.TAG_ORIENTATION);
         String baiph = exifInterface.getAttribute(ExifInterface.TAG_WHITE_BALANCE);
-
 
         StringBuilder infoBuilder = new StringBuilder();
         infoBuilder
@@ -225,10 +224,10 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     private void processNewScore() {
-        DialogShowHelp.newScoreGet(this,uriArrayList.get(currPosition));
+        DialogShowHelp.newScoreGet(this,uriArrayList.get(mPager.getCurrentItem()));
     }
 
     private void processPoem() {
-        DialogShowHelp.poemGet(this,uriArrayList.get(currPosition));
+        DialogShowHelp.poemGet(this,uriArrayList.get(mPager.getCurrentItem()));
     }
 }

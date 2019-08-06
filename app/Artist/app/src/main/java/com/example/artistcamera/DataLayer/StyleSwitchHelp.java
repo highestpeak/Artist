@@ -22,7 +22,7 @@ import static com.example.artistcamera.Util.WebHelp.generateRequestBody;
 import static com.example.artistcamera.Util.WebHelp.imageToBase64;
 
 public class StyleSwitchHelp {
-    private static final String BASE_URL ="xxx/";
+    private static final String BASE_URL ="http://106.14.33.234:80/";
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -39,8 +39,8 @@ public class StyleSwitchHelp {
         String uriOldBody = imageToBase64(UriPhotoHelp.getRealPathFromUri(context,uriOld));
         String uriNewBody = imageToBase64(UriPhotoHelp.getRealPathFromUri(context,uriNew));
         Map<String, String> requestDataMap=new HashMap<>();
-        requestDataMap.put("uriOld",uriOldBody);
-        requestDataMap.put("uriNew",uriNewBody);
+        requestDataMap.put("photo",uriOldBody);
+        requestDataMap.put("style",uriNewBody);
         Call<StyleJsonBean> call= webService.styleMigration(generateRequestBody(requestDataMap));
         //TODO: 风格迁移数据传输
         StyleJsonBean bean=null;

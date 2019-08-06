@@ -25,7 +25,7 @@ public interface WebService {
      * TODO: 风格迁移url
      */
     @Multipart
-    @POST("")
+    @POST("style_transfer")
     Call<StyleJsonBean> styleMigration(@PartMap Map<String, RequestBody> requestBodyMap);
 
     /*

@@ -4,15 +4,14 @@ package com.example.artistcamera.PresentationLayer;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,16 +21,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.example.artistcamera.DataLayer.Bean.PhotoInfo;
 import com.example.artistcamera.DataLayer.Bean.StyleJsonBean;
 import com.example.artistcamera.DataLayer.StyleSwitchHelp;
 import com.example.artistcamera.R;
 import com.example.artistcamera.Util.DialogShowHelp;
-import com.example.artistcamera.Util.UriPhotoHelp;
-
-import org.litepal.LitePal;
-
-import java.io.IOException;
 
 import app.dinus.com.loadingdrawable.render.LoadingDrawable;
 import app.dinus.com.loadingdrawable.render.shapechange.CoolWaitLoadingRenderer;
@@ -41,6 +34,7 @@ import butterknife.OnClick;
 
 
 public class StyleMigrationActivity extends AppCompatActivity {
+    private final int CODE_SELECT_OLD = 1;//相册RequestCode
     private final int CODE_SELECT_IMAGE = 2;//相册RequestCode
     @BindView(R.id.style_backto)
     ImageView styleBackto;
@@ -52,8 +46,8 @@ public class StyleMigrationActivity extends AppCompatActivity {
     ImageView styleTargetphoto;
     @BindView(R.id.style_newphoto)
     ImageView styleNewphoto;
-    @BindView(R.id.style_newphoto_info)
-    LinearLayout styleNewphotoInfo;
+    @BindView(R.id.style_newphoto_get)
+    ImageView style_newphoto_get;
     @BindView(R.id.style_photo_poem)
     ImageView stylePhotoPoem;
     @BindView(R.id.style_photo_newscore)
@@ -65,7 +59,7 @@ public class StyleMigrationActivity extends AppCompatActivity {
     private Uri uriTarget=null;
     private Boolean isTargetPhotoSet=false;
     private Boolean isNewStylePhotoGet=false;
-
+    private Bitmap newStylePhoto=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +83,15 @@ public class StyleMigrationActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+            case CODE_SELECT_OLD:
+                if (resultCode == RESULT_OK) {
+                    uriOld=data.getData();
+                    Glide.with(this)
+                            .load(uriOld)
+                            .fitCenter()
+                            .into(styleOldphoto);
+                }
+                break;
             case CODE_SELECT_IMAGE:
                 if (resultCode == RESULT_OK) {
 //                    selectPic(data);
@@ -117,8 +120,9 @@ public class StyleMigrationActivity extends AppCompatActivity {
         styleTargetphoto.setImageBitmap(BitmapFactory.decodeFile(picturePath));
     }
 
-    @OnClick({R.id.style_backto, R.id.style_close, R.id.style_targetphoto, R.id.style_photo_poem, R.id.style_photo_newscore, R.id.style_photo_save,R.id.style_newphoto})
+    @OnClick({R.id.style_oldphoto,R.id.style_backto, R.id.style_close, R.id.style_targetphoto, R.id.style_photo_poem, R.id.style_photo_newscore, R.id.style_photo_save,R.id.style_newphoto})
     public void onViewClicked(View view) {
+        Intent albumIntent =null;
         switch (view.getId()) {
             case R.id.style_backto:
                 finish();
@@ -126,8 +130,16 @@ public class StyleMigrationActivity extends AppCompatActivity {
             case R.id.style_close:
                 finish();
                 break;
+            case R.id.style_oldphoto:
+                isNewStylePhotoGet=false;
+                newStylePhoto=null;
+                albumIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(albumIntent, CODE_SELECT_OLD);
+                break;
             case R.id.style_targetphoto:
-                Intent albumIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                isNewStylePhotoGet=false;
+                newStylePhoto=null;
+                albumIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(albumIntent, CODE_SELECT_IMAGE);
                 break;
             case R.id.style_newphoto:
@@ -168,9 +180,15 @@ public class StyleMigrationActivity extends AppCompatActivity {
                     }
                     break;
                 case 1:
+                    if (styleTargetphoto!=null && newStylePhoto!=null){
+                        style_newphoto_get.setImageBitmap(newStylePhoto);
+                    }else {
+                        Toast.makeText(getApplicationContext(),"新风格图片获取失败",Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case 2:
                     if (styleTargetphoto!=null){
-//                        dialogText.setVisibility(View.VISIBLE);
-//                        dialogText.setText((String)msg.obj);
+                        Toast.makeText(getApplicationContext(),"新风格图片获取失败",Toast.LENGTH_SHORT).show();
                     }
                     break;
             }
@@ -181,43 +199,48 @@ public class StyleMigrationActivity extends AppCompatActivity {
         //loading
         CoolWaitLoadingRenderer.Builder builder = new CoolWaitLoadingRenderer.Builder(this);
         drawable = new LoadingDrawable(builder.build());
-        styleNewphoto.setImageDrawable(drawable);
+        style_newphoto_get.setImageDrawable(drawable);
         //you need start animation
         drawable.start();
         //---
         //TODO 获取风格迁移的图像的处理
-//        Thread thread=new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                StyleSwitchHelp styleSwitchHelp=new StyleSwitchHelp();
-//                StyleJsonBean bean=styleSwitchHelp.styleInfoReturn(StyleMigrationActivity.this,uriOld,uriTarget);
-//
-//                isNewStylePhotoGet=true;
-//                //TODO 获取风格迁移的图像的处理--图片显示 保存
-//                Message msg=new Message();
-//                msg.what=0;
-//                handler.sendMessage(msg);//暂停显示进度条
-//                //
-//                msg=new Message();
-//                msg.what=1;
-////                msg.obj="";//设置风格迁移的图像
-//                handler.sendMessage(msg);//显示风格迁移的图像
-//            }
-//        });
-//        thread.start();
+        Thread thread=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                StyleSwitchHelp styleSwitchHelp=new StyleSwitchHelp();
+                StyleJsonBean bean=styleSwitchHelp.styleInfoReturn(StyleMigrationActivity.this,uriOld,uriTarget);
+
+                isNewStylePhotoGet=true;
+                //TODO 获取风格迁移的图像的处理--图片显示 保存
+                Message msg=new Message();
+                msg.what=0;
+                handler.sendMessage(msg);//暂停显示进度条
+                //
+                msg=new Message();
+                msg.what=1;
+                try{
+                    byte[] decodedString = Base64.decode(bean.getResult(), Base64.DEFAULT);
+                    newStylePhoto= BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);//设置风格迁移的图像
+                }catch (Exception e){
+                    msg.what=2;
+                }
+                handler.sendMessage(msg);//显示风格迁移的图像
+            }
+        });
+        thread.start();
     }
 
     private void processNewScore() {
-        if(isNewStylePhotoGet){
+        if(isNewStylePhotoGet && newStylePhoto!=null){
             //TODO 一旦新的风格迁移图片保存成功  则使用新的uri调用方法
-            DialogShowHelp.newScoreGet(this, ((BitmapDrawable) styleNewphoto.getBackground()).getBitmap());
+            DialogShowHelp.newScoreGet(this,newStylePhoto);
         }
     }
 
     private void processPoem() {
-        if(isNewStylePhotoGet){
+        if(isNewStylePhotoGet && newStylePhoto!=null){
             //TODO 一旦新的风格迁移图片保存成功  则使用新的uri调用方法
-            DialogShowHelp.poemGet(this,((BitmapDrawable) styleNewphoto.getBackground()).getBitmap());
+            DialogShowHelp.poemGet(this,newStylePhoto);
         }
     }
 }
