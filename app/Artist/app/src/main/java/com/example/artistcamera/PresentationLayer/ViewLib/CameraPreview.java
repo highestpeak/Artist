@@ -47,6 +47,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+
 /*
 获取帧数据的接口:Camera.PreviewCallback
  */
@@ -69,12 +71,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
      */
     private CameraHandlerThread mThread;
 
+
     public CameraPreview(Context context) {
         super(context);
         mHolder = getHolder();
         mHolder.addCallback(this);
         mThread = new CameraHandlerThread("camera thread");
     }
+
 
     public void surfaceCreated(SurfaceHolder holder) {
         mCamera = getCameraInstance();
@@ -90,6 +94,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+
     public void surfaceDestroyed(SurfaceHolder holder) {
         mHolder.removeCallback(this);
         mCamera.setPreviewCallback(null);
@@ -97,6 +102,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mCamera.release();
         mCamera = null;
     }
+
 
     /*
     surfaceChanged
@@ -122,12 +128,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         center.y=(int) (this.getY()+this.getHeight()/2);
     }
 
+
     public Camera getCameraInstance() {
         if (mCamera == null) {
             switchCameraHelp();
         }
         return mCamera;
     }
+
 
     public void switchCamera(){
         switch (CAMERA_NOW){
@@ -142,11 +150,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
         switchCameraHelp();
     }
+
+
     private void switchCameraHelp(){
         synchronized (mThread) {
             mThread.openCamera();
         }
     }
+
 
     /*
     拍照
@@ -155,11 +166,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         takePicture(null);
     }
 
+
     private String currScore=null;
+
 
     public void setCurrScore(String currScore) {
         this.currScore = currScore;
     }
+
 
     public void takePicture(final ImageView view) {
         //takePicture()是一个异步过程
@@ -191,6 +205,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             }
         });
     }
+
 
     /*
     触摸事件
@@ -231,6 +246,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         return true;
     }
 
+
     private FocusRect focusRect;
     private Camera.AutoFocusCallback autoFocusCallback = new Camera.AutoFocusCallback() {
         @Override
@@ -239,15 +255,19 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             focusRect.disDrawTouchFocusRect();
         }
     };
+
+
     public void setFocusRect(FocusRect focusRect) {
         this.focusRect = focusRect;
     }
+
 
     private void drawRect(float x, float y) {
 //        if(focusRect!=null){
 //            focusRect.setTouchFoucusRect(x,y);
 //        }
     }
+
 
     /*
     处理预览帧数据data;
@@ -258,9 +278,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
      */
     private ProcessWithThreadPool processFrameThreadPool;
 
+
     public void setProcessFrameThreadPool(ProcessWithThreadPool processFrameThreadPool) {
         this.processFrameThreadPool = processFrameThreadPool;
     }
+
 
     @Override
     public void onPreviewFrame(byte[] data, Camera camera)  {
@@ -282,16 +304,18 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
+
     public Point getCenter() {
         return center;
     }
+
 
     public void setCenter(Point center) {
         this.center = center;
     }
 
-    private Point center;
 
+    private Point center;
 
 
     /*
@@ -303,12 +327,12 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
 
-
     /*
     ============================================================
     =
     ============================================================
      */
+
 
     /*
     计算旋转角度
@@ -339,6 +363,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         int result = (camInfo.orientation - degrees + 360) % 360;
         return result;
     }
+
+
     private void adjustDisplayRatio(int rotation) {
         /*
         记录父级frameLayout的记录父级的长和宽
@@ -348,10 +374,12 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         parent.getLocalVisibleRect(rect);
         int width = rect.width();
         int height = rect.height();
+
         /*
         预览分辨率
          */
         Camera.Size previewSize = mCamera.getParameters().getPreviewSize();
+
         /*
         通过比较两者的纵横比，确定SurfaceView的调整方法，计算出需要调整的长度
          */
@@ -369,8 +397,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         通过layout()将新的SurfaceView的位置应用到布局中，完成纵横比的调整。
         TODO 可以通过layout设置不可见区域大小
          */
-
-
         if (width * previewHeight <= height * previewWidth) {//竖屏
             final int scaledChildWidth = previewWidth * height / previewHeight;
             layout((width - scaledChildWidth) / 2, 0,
@@ -385,11 +411,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     }
 
+
     /*
     对焦
     https://www.polarxiong.com/archives/Android%E7%9B%B8%E6%9C%BA%E5%BC%80%E5%8F%91-%E4%BA%94-%E8%A7%A6%E6%91%B8%E5%AF%B9%E7%84%A6-%E8%A7%A6%E6%91%B8%E6%B5%8B%E5%85%89-%E4%BA%8C%E6%8C%87%E6%89%8B%E5%8A%BF%E7%BC%A9%E6%94%BE.html
      */
-
     private static Rect calculateTapArea(float x, float y, float coefficient, int width, int height) {
         float focusAreaSize = 300;
         int areaSize = Float.valueOf(focusAreaSize * coefficient).intValue();
@@ -404,6 +430,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         return new Rect(Math.round(rectF.left), Math.round(rectF.top), Math.round(rectF.right), Math.round(rectF.bottom));
     }
 
+
     private static int clamp(int x, int min, int max) {
         if (x > max) {
             return max;
@@ -413,6 +440,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
         return x;
     }
+
 
     private void handleFocus(MotionEvent event, Camera camera) {
         int viewWidth = getWidth();
@@ -455,6 +483,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+
     /*
     二指手势缩放
      */
@@ -464,6 +493,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         float y = event.getY(0) - event.getY(1);
         return (float) Math.sqrt(x * x + y * y);
     }
+
 
     private void handleZoom(boolean isZoomIn, Camera camera) {
         Camera.Parameters params = camera.getParameters();
@@ -482,6 +512,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+
     /*
     文件保存
      */
@@ -489,6 +520,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private static final int MEDIA_TYPE_VIDEO = 2;
     private static Uri outputMediaFileUri;
     private static String outputMediaFileType;
+
 
     private File getOutputMediaFile(int type) {
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
@@ -515,6 +547,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         outputMediaFileUri = Uri.fromFile(mediaFile);
         return mediaFile;
     }
+
 
     //保存文件到指定路径
     private static boolean saveImageToGallery(Context context, byte[] data) {
@@ -550,19 +583,23 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         return false;
     }
 
+
     private Uri getOutputMediaFileUri() {
         return outputMediaFileUri;
     }
 
+
     private String getOutputMediaFileType() {
         return outputMediaFileType;
     }
+
 
     /*
     录像
     https://www.polarxiong.com/archives/Android%E7%9B%B8%E6%9C%BA%E5%BC%80%E5%8F%91-%E4%B8%89-%E5%AE%9E%E7%8E%B0%E6%8B%8D%E7%85%A7%E5%BD%95%E5%83%8F%E5%92%8C%E6%9F%A5%E7%9C%8B.html
      */
     private MediaRecorder mMediaRecorder;
+
 
     private boolean startRecording() {
         if (prepareVideoRecorder()) {
@@ -574,9 +611,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         return false;
     }
 
+
     private void stopRecording() {
         stopRecording(null);
     }
+
 
     private void stopRecording(final ImageView view) {
         if (mMediaRecorder != null) {
@@ -589,9 +628,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         releaseMediaRecorder();
     }
 
+
     private boolean isRecording() {
         return mMediaRecorder != null;
     }
+
 
     private boolean prepareVideoRecorder() {
 
@@ -635,6 +676,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         return true;
     }
 
+
     private void releaseMediaRecorder() {
         if (mMediaRecorder != null) {
             mMediaRecorder.reset();
@@ -643,6 +685,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             mCamera.lock();
         }
     }
+
 
     /**
      * If you want to make the camera image show in the same orientation as the display, you can use the following code.
@@ -669,6 +712,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
         mCamera.setDisplayOrientation(result);
     }
+
 
     /*
     让Camera.open()在非UI线程执行,
@@ -707,6 +751,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
         setCameraDisplayOrientation();
     }
+
 
     private class CameraHandlerThread extends HandlerThread {
         Handler mHandler;
