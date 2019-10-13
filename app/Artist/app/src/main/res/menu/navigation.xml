@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_base_edit"
+        android:icon="@drawable/nav_base_edit"
+        android:title="基础编辑" />
+
+    <item
+        android:id="@+id/nav_filter"
+        android:icon="@drawable/nav_filter"
+        android:title="滤镜" />
+
+    <item
+        android:id="@+id/nav_transfer"
+        android:icon="@drawable/nav_transfer"
+        android:title="风格迁移" />
+
+    <item
+        android:id="@+id/nav_poem"
+        android:icon="@drawable/nav_poem"
+        android:title="AI写诗" />
+
+</menu>

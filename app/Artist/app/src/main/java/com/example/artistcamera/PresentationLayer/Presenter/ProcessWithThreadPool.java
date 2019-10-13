@@ -1,10 +1,9 @@
 package com.example.artistcamera.PresentationLayer.Presenter;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.example.artistcamera.DataLayer.ScoreGetHelp;
-import com.example.artistcamera.PresentationLayer.ScoreCallBack;
+import com.example.artistcamera.DataLayer.ScoreCallBack;
 import com.example.artistcamera.PresentationLayer.ViewLib.DirectSuggest.SUGGEST_DIRECT;
 
 import java.util.Map;

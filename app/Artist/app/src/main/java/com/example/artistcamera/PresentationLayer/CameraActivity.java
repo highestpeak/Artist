@@ -3,13 +3,10 @@ package com.example.artistcamera.PresentationLayer;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.Point;
-import android.hardware.Camera;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,7 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.example.artistcamera.DataLayer.ScoreGetHelp;
+import com.example.artistcamera.DataLayer.ScoreCallBack;
 import com.example.artistcamera.PresentationLayer.Presenter.ProcessWithThreadPool;
 import com.example.artistcamera.PresentationLayer.ViewLib.CameraPreview;
 import com.example.artistcamera.PresentationLayer.ViewLib.DirectSuggest;
@@ -26,7 +23,6 @@ import com.example.artistcamera.PresentationLayer.ViewLib.FocusRect;
 import com.example.artistcamera.PresentationLayer.ViewLib.SettingsFragment;
 import com.example.artistcamera.R;
 import java.util.List;
-import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,7 +30,7 @@ import butterknife.OnClick;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class CameraActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks,ScoreCallBack{
+public class CameraActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks, ScoreCallBack {
     /**
      * view bind
      */

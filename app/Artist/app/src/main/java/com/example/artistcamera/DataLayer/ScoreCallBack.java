@@ -1,4 +1,4 @@
-package com.example.artistcamera.PresentationLayer;
+package com.example.artistcamera.DataLayer;
 
 import com.example.artistcamera.PresentationLayer.ViewLib.DirectSuggest.SUGGEST_DIRECT;
 

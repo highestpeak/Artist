@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.artistcamera">
+
     <uses-permission android:name="android.permission.FLASHLIGHT" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -17,16 +22,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PresentationLayer.PhotoActivity"></activity>
-        <activity android:name=".PresentationLayer.StyleMigrationActivity" />
-        <activity android:name=".PresentationLayer.CameraActivity" />
-        <activity android:name=".PresentationLayer.MainActivity">
+        <activity android:name=".PresentationLayer.GuideActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".PresentationLayer.SplashActivity"></activity>
+        <activity android:name=".PresentationLayer.MainActivity"></activity>
+
+        <activity android:name=".PresentationLayer.CameraActivity" />
+        <activity android:name=".PresentationLayer.PhotoActivity" />
+        <activity android:name=".PresentationLayer.EditFinishActivity" />
+        <activity android:name=".PresentationLayer.PicEditActivity" />
+        <activity android:name=".PresentationLayer.StyleMigrationActivity" />
     </application>
 
 </manifest>

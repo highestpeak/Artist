@@ -1,41 +1,37 @@
 package com.example.artistcamera.PresentationLayer;
 
-import android.content.Intent;
-//import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.example.artistcamera.R;
 
 public class MainActivity extends AppCompatActivity {
+    private ImageButton btnCamera;
+    private ImageButton btnAlbum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //processThread是初始化网络操作、本地数据库读取、等等的操作
-        Thread processThread=new Thread(new Runnable() {
+        setContentView(R.layout.activity_main);
+
+        //todo 替换findviewbyid为bufferkie
+        btnCamera = findViewById(R.id.btn_1);
+        btnAlbum = findViewById(R.id.btn_2);
+        btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                try {
-                    Thread.sleep(0);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, CameraActivity.class));
             }
         });
-        processThread.start();
-
-        //启动页等待延时
-        try {
-            Thread.sleep(0);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        //启动mainactivity
-        Intent intent = new Intent(this, CameraActivity.class);
-        startActivity(intent);
-        finish();
+        btnAlbum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, PicEditActivity.class));
+            }
+        });
     }
 }
