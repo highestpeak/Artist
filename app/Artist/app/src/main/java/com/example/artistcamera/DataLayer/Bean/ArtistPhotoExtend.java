@@ -3,7 +3,7 @@ package com.example.artistcamera.DataLayer.Bean;
 import org.litepal.annotation.Column;
 import org.litepal.crud.LitePalSupport;
 
-public class PhotoInfo extends LitePalSupport {
+public class ArtistPhotoExtend extends LitePalSupport {
     @Column(nullable = false)
     private String uri;
 
@@ -33,5 +33,11 @@ public class PhotoInfo extends LitePalSupport {
 
     public void setPoem(String poem) {
         this.poem = poem;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%-15s=%s \n","score",getScore())+
+               String.format("%-15s=%s \n","poem",getPoem());
     }
 }

@@ -2,9 +2,12 @@ package com.example.artistcamera.PresentationLayer;
 
 import android.content.Intent;
 //import android.support.v7.app.AppCompatActivity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -39,10 +42,27 @@ public class SplashActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                firstRun();
             }
-        }, 5000);
+        }, 1000);
     }
+
+    private void firstRun() {
+        SharedPreferences sharedPreferences = getSharedPreferences("FirstRun",0);
+        Boolean first_run = sharedPreferences.getBoolean("First",true);
+        if (first_run){
+            sharedPreferences.edit().putBoolean("First",false).commit();
+            startActivity(new Intent(SplashActivity.this,GuideActivity.class));
+            finish();// finish 并不会结束该firstRun函数
+        }else {
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            startActivity(new Intent(SplashActivity.this,MainActivity.class));
+            finish();
+        }
+    }
+
 }

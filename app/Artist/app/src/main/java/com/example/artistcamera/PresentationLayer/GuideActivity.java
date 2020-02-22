@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,36 +38,23 @@ public class GuideActivity extends AppCompatActivity implements ViewPager.OnPage
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_guide);
-        firstRun();
+
+        initGuidePager();
     }
 
-    private void firstRun() {
-        SharedPreferences sharedPreferences = getSharedPreferences("FirstRun",0);
-        Boolean first_run = sharedPreferences.getBoolean("First",true);
-
-        if (first_run){
-
-            sharedPreferences.edit().putBoolean("First",false).commit();
-            ib_start = (ImageButton) findViewById(R.id.guide_ib_start);
-            ib_start.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(GuideActivity.this,MainActivity.class));
-                    finish();
-                }
-            });
-
-            //加载ViewPager
-            initViewPager();
-
-            //加载底部圆点
-            initPoint();
-        }
-        else {
-
-            startActivity(new Intent(GuideActivity.this,SplashActivity.class));
-            finish();
-        }
+    private void initGuidePager() {
+        ib_start = (ImageButton) findViewById(R.id.guide_ib_start);
+        ib_start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(GuideActivity.this,MainActivity.class));
+                finish();
+            }
+        });
+        //加载ViewPager
+        initViewPager();
+        //加载底部圆点
+        initPoint();
     }
 
     /**
@@ -131,7 +117,6 @@ public class GuideActivity extends AppCompatActivity implements ViewPager.OnPage
         vp.setOnPageChangeListener(this);
     }
 
-
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -159,6 +144,7 @@ public class GuideActivity extends AppCompatActivity implements ViewPager.OnPage
             ib_start.setVisibility(View.GONE);
         }
     }
+
     @Override
     public void onPageScrollStateChanged(int state) {
 

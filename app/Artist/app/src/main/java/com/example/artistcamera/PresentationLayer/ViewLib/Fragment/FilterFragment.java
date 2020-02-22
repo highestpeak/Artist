@@ -13,6 +13,8 @@ import com.example.artistcamera.R;
  */
 
 public class FilterFragment extends Fragment {
+
+
     //创建视图
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -20,4 +22,6 @@ public class FilterFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate( R.layout.fragment_filter, container, false );  //要加载的layout文件
     }
+
+
 }

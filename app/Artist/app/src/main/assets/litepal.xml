@@ -6,7 +6,7 @@
 
     <!--表中定义数据模型-->
     <list>
-        <mapping class="com.example.artistcamera.DataLayer.Bean.PhotoInfo"/>
+        <mapping class="com.example.artistcamera.DataLayer.Bean.ArtistPhotoExtend"/>
     </list>
 
 </litepal>

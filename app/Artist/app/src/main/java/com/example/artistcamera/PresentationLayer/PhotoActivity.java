@@ -1,7 +1,6 @@
 package com.example.artistcamera.PresentationLayer;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,29 +8,24 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
-import com.example.artistcamera.DataLayer.Bean.PhotoInfo;
-import com.example.artistcamera.DataLayer.PoemGetHelp;
+import com.example.artistcamera.DataLayer.Bean.ArtistPhotoExtend;
+import com.example.artistcamera.DataLayer.vo.PhotoInfoVO;
 import com.example.artistcamera.R;
 import com.example.artistcamera.Util.DialogShowHelp;
 import com.example.artistcamera.Util.UriPhotoHelp;
-import com.example.artistcamera.Util.WebHelp;
 
 import org.litepal.LitePal;
-import org.litepal.crud.LitePalSupport;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,34 +35,37 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.example.artistcamera.PresentationLayer.ViewLib.ArtistDialogLib.photoInfoDialog;
+import static com.example.artistcamera.Util.PhotoHelp.getPhotoInfo;
+
 public class PhotoActivity extends AppCompatActivity {
     /**
      * debug
      */
     private static final String TAG = "PhotoActivity";
     @BindView(R.id.onephoto_photo_info)
-    ImageView onephotoPhotoInfo;
+    ImageView photoInfoImageView;
     @BindView(R.id.onephoto_photo_new_style)
-    ImageView onephotoPhotoNewStyle;
+    ImageView photoNewStyleImageView;
     @BindView(R.id.onephoto_photo_poem)
-    ImageView onephotoPhotoPoem;
+    ImageView photoPoemImageView;
     @BindView(R.id.onephoto_photo_newscore)
-    ImageView onephotoPhotoNewscore;
+    ImageView photoNewScoreImageView;
+    @BindView(R.id.pager)
+    ViewPager mPager;
 
-    private ViewPager mPager;
-//    private int mPager.getCurrentItem()=-1;
     private ArrayList<Uri> uriArrayList;
-    private PhotoInfo photoInfo=null;
+    private ArtistPhotoExtend artistPhotoExtend =null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
         ButterKnife.bind(this);
-        mPager = (ViewPager) findViewById(R.id.pager);
-        mPager.setPageMargin((int) (getResources().getDisplayMetrics().density * 15));
+
         uriArrayList = getNewestPhoto(this);
 
+        mPager.setPageMargin((int) (getResources().getDisplayMetrics().density * 15));
         mPager.setAdapter(new PagerAdapter() {
             @Override
             public int getCount() {
@@ -83,7 +80,7 @@ public class PhotoActivity extends AppCompatActivity {
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
                 ImageView imageView = new ImageView(getApplicationContext());
-                photoInfo=null;
+                artistPhotoExtend =null;
                 Glide.with(PhotoActivity.this)
                         .load(uriArrayList.get(position))
                         .fitCenter()
@@ -148,79 +145,32 @@ public class PhotoActivity extends AppCompatActivity {
         Intent intent=null;
         switch (view.getId()) {
             case R.id.onephoto_backtogallery:
-//                intent = new Intent(this, StyleMigrationActivity.class);
-//                startActivity(intent);
                 finish();
                 break;
             case R.id.onephoto_gallery:
-//                intent = new Intent(this, StyleMigrationActivity.class);
-//                startActivity(intent);
                 finish();
                 break;
             case R.id.onephoto_close:
                 finish();
                 break;
             case R.id.onephoto_photo_info:
-                try{
-                    String uriToFind=uriArrayList.get(mPager.getCurrentItem()).toString();
-                    photoInfo= LitePal.where("uri = ? ",uriToFind).find(PhotoInfo.class).get(0);
-                }catch (Exception e){
-                    Log.d(TAG,"error query photo info ; msg : " +e.getMessage());
-                }
-                processShowPhotoInfo();
+                photoInfoDialog(this,uriArrayList.get(mPager.getCurrentItem()));
                 break;
             case R.id.onephoto_photo_new_style:
                 intent = new Intent(this, StyleMigrationActivity.class);
-                // 在Intent中传递数据
                 intent.putExtra("from", "onePhoto");
                 intent.putExtra("photoUri", uriArrayList.get(mPager.getCurrentItem()).toString());
-                // 启动Intent
                 startActivity(intent);
                 break;
             case R.id.onephoto_photo_poem:
+                //todo
                 processPoem();
                 break;
             case R.id.onephoto_photo_newscore:
+                //todo
                 processNewScore();
                 break;
         }
-    }
-
-    private void processShowPhotoInfo() {
-        //photoInfo
-        ExifInterface exifInterface = null;
-        String path=UriPhotoHelp.getRealPathFromUri(this,uriArrayList.get(mPager.getCurrentItem()));
-        try {
-            exifInterface = new ExifInterface(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String shijain = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
-        String baoguangshijian = exifInterface.getAttribute(ExifInterface.TAG_EXPOSURE_TIME);
-        String jiaoju = exifInterface.getAttribute(ExifInterface.TAG_FOCAL_LENGTH);
-        String chang = exifInterface.getAttribute(ExifInterface.TAG_IMAGE_LENGTH);
-        String kuan = exifInterface.getAttribute(ExifInterface.TAG_IMAGE_WIDTH);
-        String jiaodu = exifInterface.getAttribute(ExifInterface.TAG_ORIENTATION);
-        String baiph = exifInterface.getAttribute(ExifInterface.TAG_WHITE_BALANCE);
-
-        StringBuilder infoBuilder = new StringBuilder();
-        infoBuilder
-                .append("路径 = " + path+"\n");
-        if(photoInfo!=null){
-            infoBuilder
-                    .append("AI写诗 = " + photoInfo.getPoem()+"\n")
-                    .append("分数 = " + photoInfo.getScore()+"\n");
-        }
-        infoBuilder
-                .append("时间 = " + shijain+"\n")
-                .append("曝光时长 = " + baoguangshijian+"\n")
-                .append("焦距 = " + jiaoju+"\n")
-                .append("长 = " + chang+"\n")
-                .append("宽 = " + kuan+"\n")
-                .append("角度 = " + jiaodu+"\n")
-                .append("白平衡 = " + baiph+"\n");
-
-        DialogShowHelp.showPhotoInfo(this,infoBuilder.toString());
     }
 
     private void processNewScore() {

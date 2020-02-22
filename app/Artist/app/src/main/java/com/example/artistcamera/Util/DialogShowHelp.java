@@ -1,45 +1,32 @@
 package com.example.artistcamera.Util;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.artistcamera.DataLayer.Bean.PhotoInfo;
+import com.example.artistcamera.DataLayer.Bean.ArtistPhotoExtend;
 import com.example.artistcamera.DataLayer.PoemGetHelp;
 import com.example.artistcamera.DataLayer.ScoreGetHelp;
 import com.example.artistcamera.R;
 
 import org.litepal.LitePal;
 
-import java.security.PublicKey;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import app.dinus.com.loadingdrawable.DensityUtil;
 import app.dinus.com.loadingdrawable.render.LoadingDrawable;
-import app.dinus.com.loadingdrawable.render.LoadingRenderer;
-import app.dinus.com.loadingdrawable.render.circle.jump.SwapLoadingRenderer;
 import app.dinus.com.loadingdrawable.render.shapechange.CoolWaitLoadingRenderer;
 
 public class DialogShowHelp {
@@ -155,17 +142,17 @@ public class DialogShowHelp {
                 msg.obj=poem;
                 handler.sendMessage(msg);
                 try {
-                    List<PhotoInfo> photoInfos= LitePal.where("uri = ? ",uri.toString()).find(PhotoInfo.class);
-                    if(photoInfos.size()==0){
-                        PhotoInfo photoInfo=new PhotoInfo();
+                    List<ArtistPhotoExtend> artistPhotoExtends = LitePal.where("uri = ? ",uri.toString()).find(ArtistPhotoExtend.class);
+                    if(artistPhotoExtends.size()==0){
+                        ArtistPhotoExtend artistPhotoExtend =new ArtistPhotoExtend();
                         String uriToIn=uri.toString();
-                        photoInfo.setUri(uriToIn);
-                        photoInfo.setPoem(poem);
-                        photoInfo.save();
+                        artistPhotoExtend.setUri(uriToIn);
+                        artistPhotoExtend.setPoem(poem);
+                        artistPhotoExtend.save();
                     }else {
-                        PhotoInfo photoInfo=photoInfos.get(0);
-                        photoInfo.setPoem(poem);
-                        photoInfo.updateAll(" uri = ? ", uri.toString());
+                        ArtistPhotoExtend artistPhotoExtend = artistPhotoExtends.get(0);
+                        artistPhotoExtend.setPoem(poem);
+                        artistPhotoExtend.updateAll(" uri = ? ", uri.toString());
                     }
                 }catch (Exception e){
                     Log.d("POEM SAVE","save error");
@@ -262,9 +249,9 @@ public class DialogShowHelp {
                 msg.obj=scoreReturn.get("score");
                 handler.sendMessage(msg);
                 try {
-                    PhotoInfo photoInfo= LitePal.where("uri = ? ",uri.toString()).find(PhotoInfo.class).get(0);
-                    photoInfo.setScore((String) scoreReturn.get("score"));
-                    photoInfo.updateAll(" uri = ? ", uri.toString());
+                    ArtistPhotoExtend artistPhotoExtend = LitePal.where("uri = ? ",uri.toString()).find(ArtistPhotoExtend.class).get(0);
+                    artistPhotoExtend.setScore((String) scoreReturn.get("score"));
+                    artistPhotoExtend.updateAll(" uri = ? ", uri.toString());
                 }catch (Exception e){
                     Log.d("POEM SAVE","save error");
                 }
@@ -277,7 +264,7 @@ public class DialogShowHelp {
 
 
     public static void showPhotoInfo(Context context,String infoStr){
-        String title="PhotoInfo";
+        String title="ArtistPhotoExtend";
         //加载布局并初始化组件
         View dialogView = LayoutInflater.from(context).inflate(R.layout.custom_dialog_layout,null);
         dialogText = (TextView) dialogView.findViewById(R.id.dialog_text);

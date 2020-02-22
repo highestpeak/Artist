@@ -29,7 +29,7 @@
         android:orientation="vertical">
 
         <ImageButton
-            android:id="@+id/btn_1"
+            android:id="@+id/btnCamera"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/cam"
@@ -46,7 +46,7 @@
             android:layout_marginBottom="30dp"/>
 
         <ImageButton
-            android:id="@+id/btn_2"
+            android:id="@+id/btnAlbum"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/alb"

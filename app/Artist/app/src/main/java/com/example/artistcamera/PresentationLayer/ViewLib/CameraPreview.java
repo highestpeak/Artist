@@ -15,7 +15,6 @@ import android.graphics.RectF;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
-import android.media.ExifInterface;
 import android.media.MediaRecorder;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -34,13 +33,10 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.example.artistcamera.DataLayer.Bean.PhotoInfo;
 import com.example.artistcamera.PresentationLayer.Presenter.ProcessWithThreadPool;
-import com.example.artistcamera.Util.WebHelp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -190,7 +186,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 //                            Thread thread=new Thread(new Runnable() {
 //                                @Override
 //                                public void run() {
-//                                    PhotoInfo photoInfo=new PhotoInfo();
+//                                    ArtistPhotoExtend photoInfo=new ArtistPhotoExtend();
 //                                    String uriToIn=outputMediaFileUri.toString();
 //                                    photoInfo.setUri(uriToIn);
 //                                    photoInfo.setScore(currScore);

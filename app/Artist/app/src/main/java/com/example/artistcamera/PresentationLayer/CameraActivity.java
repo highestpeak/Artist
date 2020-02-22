@@ -70,8 +70,6 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
     private ProcessWithThreadPool processWithThreadPool=new ProcessWithThreadPool();
     private FocusRect focusRect;
     private DirectSuggest directSuggest;
-    //设定分数返回回调
-    //===
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,15 +77,16 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
         getPermission();
         setContentView(R.layout.activity_camera);
         ButterKnife.bind(this);
-        focusRect=new FocusRect(this);
-        processWithThreadPool.setScoreCallBack(this::getScore);
-        directSuggest=new DirectSuggest(this);
-        startPreview();
         Glide.with(this)
                 .load(PhotoActivity.getNewestPhoto(this).get(0))
                 .fitCenter()
                 .into(gallerySwitchButon);
-//        new ScoreGetHelp();
+
+        //TODO scorecallback的调用顺序不明确，camerapreview启动顺序不是明确
+        processWithThreadPool.setScoreCallBack(this::getScore);
+        focusRect=new FocusRect(this);
+        directSuggest=new DirectSuggest(this);
+        startPreview();
     }
 
     public void startPreview() {
@@ -101,7 +100,6 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
         preview.addView(focusRect);
         preview.addView(directSuggest);
 
-
         SettingsFragment.passCamera(mPreview.getCameraInstance());
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         SettingsFragment.setDefault(PreferenceManager.getDefaultSharedPreferences(this));
@@ -114,7 +112,6 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
                         new SettingsFragment()).addToBackStack(null).commit();
             }
         });
-
     }
 
     public void stopPreview() {
@@ -137,7 +134,6 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
         super.onPause();
         mPreview = null;
     }
-
 
    /**
     * 权限
@@ -203,7 +199,7 @@ public class CameraActivity extends AppCompatActivity implements EasyPermissions
         }
     }
 
-    /*
+    /**
      * 回调
      */
     private long timeMark;
