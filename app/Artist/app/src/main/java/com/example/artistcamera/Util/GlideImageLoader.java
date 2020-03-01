@@ -9,6 +9,9 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.target.ImageViewTarget;
 
+/**
+ * used by galleryfinal
+ */
 public class GlideImageLoader implements cn.finalteam.galleryfinal.ImageLoader {
 
     @Override
@@ -29,12 +32,12 @@ public class GlideImageLoader implements cn.finalteam.galleryfinal.ImageLoader {
 
                     @Override
                     public void setRequest(Request request) {
-//                        imageView.setTag(R.id.adapter_item_tag_key,request);
+                        //imageView.setTag(R.id.adapter_item_tag_key,request);
                     }
 
                     @Override
                     public Request getRequest() {
-//                        return (Request) imageView.getTag(R.id.adapter_item_tag_key);
+                        //return (Request) imageView.getTag(R.id.adapter_item_tag_key);
                         return null;
                     }
                 });

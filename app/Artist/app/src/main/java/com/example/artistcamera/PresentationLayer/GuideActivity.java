@@ -92,7 +92,7 @@ public class GuideActivity extends AppCompatActivity implements ViewPager.OnPage
      */
     private void initViewPager() {
         vp = (ViewPager) findViewById(R.id.guide_vp);
-        //TODO 动态加载 实例化图片资源 而不是写死的？？
+        //动态加载 实例化图片资源 而不是写死的？？
         imageIdArray = new int[]{R.drawable.guide1,R.drawable.guide2,R.drawable.guide3,R.drawable.guide4};
         viewList = new ArrayList<>();
         //获取一个Layout参数，设置为全屏

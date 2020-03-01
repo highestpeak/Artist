@@ -22,23 +22,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PresentationLayer.GuideActivity">
-
-        </activity>
+        <activity android:name=".PresentationLayer.CropActivity"></activity>
+        <activity android:name=".PresentationLayer.GuideActivity" />
         <activity android:name=".PresentationLayer.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PresentationLayer.MainActivity"></activity>
-
+        <activity android:name=".PresentationLayer.MainActivity" />
         <activity android:name=".PresentationLayer.CameraActivity" />
         <activity android:name=".PresentationLayer.PhotoActivity" />
         <activity android:name=".PresentationLayer.EditFinishActivity" />
         <activity android:name=".PresentationLayer.PicEditActivity" />
         <activity android:name=".PresentationLayer.StyleMigrationActivity" />
+
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
 </manifest>

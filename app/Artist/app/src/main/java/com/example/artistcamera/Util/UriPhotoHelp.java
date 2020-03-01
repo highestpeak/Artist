@@ -76,7 +76,7 @@ public class UriPhotoHelp {
 
     /**
      * 获取数据库表中的 _data 列，即返回Uri对应的文件路径
-     * @return
+     * @return Uri对应的文件路径
      */
     private static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
         String path = null;

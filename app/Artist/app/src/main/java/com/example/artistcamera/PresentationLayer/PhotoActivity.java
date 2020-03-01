@@ -4,8 +4,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.media.ExifInterface;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -20,15 +21,12 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.example.artistcamera.DataLayer.Bean.ArtistPhotoExtend;
-import com.example.artistcamera.DataLayer.vo.PhotoInfoVO;
 import com.example.artistcamera.R;
 import com.example.artistcamera.Util.DialogShowHelp;
-import com.example.artistcamera.Util.UriPhotoHelp;
-
-import org.litepal.LitePal;
 
 import java.io.File;
-import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -36,7 +34,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.example.artistcamera.PresentationLayer.ViewLib.ArtistDialogLib.photoInfoDialog;
-import static com.example.artistcamera.Util.PhotoHelp.getPhotoInfo;
 
 public class PhotoActivity extends AppCompatActivity {
     /**
@@ -49,13 +46,12 @@ public class PhotoActivity extends AppCompatActivity {
     ImageView photoNewStyleImageView;
     @BindView(R.id.onephoto_photo_poem)
     ImageView photoPoemImageView;
-    @BindView(R.id.onephoto_photo_newscore)
-    ImageView photoNewScoreImageView;
     @BindView(R.id.pager)
     ViewPager mPager;
+    PagerAdapter mAdapter;
 
     private ArrayList<Uri> uriArrayList;
-    private ArtistPhotoExtend artistPhotoExtend =null;
+    private ArtistPhotoExtend artistPhotoExtend = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +59,14 @@ public class PhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_photo);
         ButterKnife.bind(this);
 
-        uriArrayList = getNewestPhoto(this);
+        initViewPager();
 
+    }
+
+    private void initViewPager(){
+        uriArrayList = getNewestPhoto(this);
         mPager.setPageMargin((int) (getResources().getDisplayMetrics().density * 15));
-        mPager.setAdapter(new PagerAdapter() {
+        mAdapter = new PagerAdapter() {
             @Override
             public int getCount() {
                 return uriArrayList.size();
@@ -80,7 +80,7 @@ public class PhotoActivity extends AppCompatActivity {
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
                 ImageView imageView = new ImageView(getApplicationContext());
-                artistPhotoExtend =null;
+                artistPhotoExtend = null;
                 Glide.with(PhotoActivity.this)
                         .load(uriArrayList.get(position))
                         .fitCenter()
@@ -95,7 +95,8 @@ public class PhotoActivity extends AppCompatActivity {
                 container.removeView((View) object);
                 Glide.clear((View) object);
             }
-        });
+        };
+        mPager.setAdapter(mAdapter);
     }
 
     /**
@@ -129,7 +130,7 @@ public class PhotoActivity extends AppCompatActivity {
             img_path.add("file://" + path);
 //            Uri uri = ContentUris.withAppendedId(mediaUri,
 //                    mCursor.getLong(mCursor.getColumnIndex(MediaStore.Images.Media._ID)));
-            Uri uri=Uri.fromFile(new File(path));
+            Uri uri = Uri.fromFile(new File(path));
             img_uri.add(uri);
             if (img_path.size() == 100) {
                 break;
@@ -140,21 +141,19 @@ public class PhotoActivity extends AppCompatActivity {
         return img_uri;
     }
 
-    @OnClick({R.id.onephoto_backtogallery, R.id.onephoto_gallery, R.id.onephoto_close, R.id.onephoto_photo_info, R.id.onephoto_photo_new_style, R.id.onephoto_photo_poem, R.id.onephoto_photo_newscore})
-    public void onViewClicked(View view) {
-        Intent intent=null;
+    @OnClick({R.id.onephoto_backtogallery, R.id.onephoto_gallery, R.id.onephoto_close,
+            R.id.onephoto_photo_info, R.id.onephoto_photo_new_style, R.id.onephoto_photo_poem,
+            R.id.onephoto_newscore,R.id.onephoto_delete, R.id.onephoto_edit})
+    public void onViewClicked(View view){
+        Intent intent = null;
         switch (view.getId()) {
             case R.id.onephoto_backtogallery:
-                finish();
-                break;
             case R.id.onephoto_gallery:
-                finish();
-                break;
             case R.id.onephoto_close:
                 finish();
                 break;
             case R.id.onephoto_photo_info:
-                photoInfoDialog(this,uriArrayList.get(mPager.getCurrentItem()));
+                photoInfoDialog(this, uriArrayList.get(mPager.getCurrentItem()));
                 break;
             case R.id.onephoto_photo_new_style:
                 intent = new Intent(this, StyleMigrationActivity.class);
@@ -163,21 +162,38 @@ public class PhotoActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.onephoto_photo_poem:
-                //todo
                 processPoem();
                 break;
-            case R.id.onephoto_photo_newscore:
-                //todo
+            case R.id.onephoto_newscore:
                 processNewScore();
+                break;
+            case R.id.onephoto_delete:
+                int pos = mPager.getCurrentItem();
+                deleteImage(uriArrayList.get(pos));
+                uriArrayList.remove(mPager.getCurrentItem());
+                mPager.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
+                break;
+            case R.id.onephoto_edit:
+                intent = new Intent(this, PicEditActivity.class);
+                intent.putExtra("from", "onePhoto");
+                intent.putExtra("photoUri", uriArrayList.get(mPager.getCurrentItem()).toString());
+                startActivity(intent);
                 break;
         }
     }
 
+    public void deleteImage(Uri uri) {
+        ContentResolver contentResolver = getContentResolver();
+        contentResolver.delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                MediaStore.Images.ImageColumns.DATA + "=?" , new String[]{ uri.getPath() });
+    }
+
     private void processNewScore() {
-        DialogShowHelp.newScoreGet(this,uriArrayList.get(mPager.getCurrentItem()));
+        DialogShowHelp.newScoreGet(this, uriArrayList.get(mPager.getCurrentItem()));
     }
 
     private void processPoem() {
-        DialogShowHelp.poemGet(this,uriArrayList.get(mPager.getCurrentItem()));
+        DialogShowHelp.poemGet(this, uriArrayList.get(mPager.getCurrentItem()));
     }
 }

@@ -2,7 +2,6 @@ package com.example.artistcamera.DataLayer.vo;
 
 import android.media.ExifInterface;
 
-//todo
 public class PhotoInfoVO {
 
     private String TYPE_TAG="";

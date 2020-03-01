@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, CameraActivity.class));
                 break;
             case R.id.btnAlbum:
-                startActivity(new Intent(MainActivity.this, PicEditActivity.class));
+                startActivity(new Intent(MainActivity.this, PhotoActivity.class));
                 break;
         }
     }

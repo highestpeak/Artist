@@ -15,8 +15,9 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
 public class WebHelp {
+
     /**
-     * 将图片转换成Base64编码的字符串
+     * bitmap image and base64 conversion
      */
     public static String imageToBase64(String path){
         if(TextUtils.isEmpty(path)){
@@ -56,8 +57,11 @@ public class WebHelp {
         return encoded;
     }
 
-    //比如可以这样生成Map<String, RequestBody> requestBodyMap
-    //Map<String, String> requestDataMap这里面放置上传数据的键值对。
+    /**
+     * convert Map<String, String> to Map<String, RequestBody>
+     * @param requestDataMap data to send
+     * @return Map<String, RequestBody>
+     */
     public static Map<String, RequestBody> generateRequestBody(Map<String, String> requestDataMap) {
         Map<String, RequestBody> requestBodyMap = new HashMap<>();
         for (String key : requestDataMap.keySet()) {
@@ -67,4 +71,5 @@ public class WebHelp {
         }
         return requestBodyMap;
     }
+
 }

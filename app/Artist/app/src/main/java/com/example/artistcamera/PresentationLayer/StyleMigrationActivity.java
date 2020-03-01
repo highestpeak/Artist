@@ -202,7 +202,7 @@ public class StyleMigrationActivity extends AppCompatActivity {
         //you need start animation
         drawable.start();
         //---
-        //TODO 获取风格迁移的图像的处理
+        //获取风格迁移的图像的处理
         Thread thread=new Thread(new Runnable() {
             @Override
             public void run() {
@@ -210,7 +210,7 @@ public class StyleMigrationActivity extends AppCompatActivity {
                 StyleJsonBean bean=styleSwitchHelp.styleInfoReturn(StyleMigrationActivity.this,uriOld,uriTarget);
 
                 isNewStylePhotoGet=true;
-                //TODO 获取风格迁移的图像的处理--图片显示 保存
+                //获取风格迁移的图像的处理--图片显示 保存
                 Message msg=new Message();
                 msg.what=0;
                 handler.sendMessage(msg);//暂停显示进度条
@@ -231,14 +231,14 @@ public class StyleMigrationActivity extends AppCompatActivity {
 
     private void processNewScore() {
         if(isNewStylePhotoGet && newStylePhoto!=null){
-            //TODO 一旦新的风格迁移图片保存成功  则使用新的uri调用方法
+            //一旦新的风格迁移图片保存成功  则使用新的uri调用方法
             DialogShowHelp.newScoreGet(this,newStylePhoto);
         }
     }
 
     private void processPoem() {
         if(isNewStylePhotoGet && newStylePhoto!=null){
-            //TODO 一旦新的风格迁移图片保存成功  则使用新的uri调用方法
+            //一旦新的风格迁移图片保存成功  则使用新的uri调用方法
             DialogShowHelp.poemGet(this,newStylePhoto);
         }
     }
