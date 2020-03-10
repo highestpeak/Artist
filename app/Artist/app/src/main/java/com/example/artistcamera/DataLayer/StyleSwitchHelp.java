@@ -22,7 +22,7 @@ import static com.example.artistcamera.Util.WebHelp.generateRequestBody;
 import static com.example.artistcamera.Util.WebHelp.imageToBase64;
 
 public class StyleSwitchHelp {
-    private static final String BASE_URL ="http://106.14.33.234:80/";
+    private static final String BASE_URL ="http://artiststyle.highestpeakscu.com/";
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())

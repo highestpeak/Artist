@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">artistcamera</string>
+
+    <!--main activity-->
+    <string name="main_top">!下拉打开相机</string>
+    <string name="main_camera">照相机</string>
+    <string name="main_gallery">相册</string>
+
+    <!--camera activity evaluate 见ScoreGetHelp类-->
+
+    <!--photo activity-->
+    <string name="photo_bottom_score">评分</string>
+    <string name="photo_bottom_delete">删除</string>
+    <string name="photo_bottom_edit">编辑</string>
+
+    <!--edit pop up-->
+    <string name="edit_popup_contrast">对比度</string>
+    <string name="edit_popup_brightness">亮度 </string>
+    <string name="edit_popup_saturation">饱和度</string>
+
+    <!--styleMigration activity-->
+    <string name="style_migration_evaluate">评分</string>
+    <string name="style_migration_save">保存</string>
 </resources>

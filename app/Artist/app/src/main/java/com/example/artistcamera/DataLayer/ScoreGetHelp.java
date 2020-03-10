@@ -10,6 +10,7 @@ import android.util.Log;
 import com.example.artistcamera.DataLayer.Bean.EvaluateJsonBean;
 import com.example.artistcamera.DataLayer.Bean.PoemBean;
 import com.example.artistcamera.PresentationLayer.ViewLib.DirectSuggest;
+import com.example.artistcamera.R;
 import com.example.artistcamera.Util.UriPhotoHelp;
 import com.example.artistcamera.Util.WebHelp;
 
@@ -31,7 +32,7 @@ import static com.example.artistcamera.Util.WebHelp.generateRequestBody;
 import static com.example.artistcamera.Util.WebHelp.imageToBase64;
 
 public class ScoreGetHelp {
-    private static final String BASE_URL ="http://120.25.227.237:80/";
+    private static final String BASE_URL ="http://artistscore.highestpeakscu.com/";
     private Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -60,7 +61,6 @@ public class ScoreGetHelp {
     public Map<String,Object> scoreReturn(Bitmap frameData,final int pattern){
         Map<String,Object> rs=new HashMap<>();
 
-        //TODO: 进行数据传输
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"),"this_is_username");
         String imageBody = WebHelp.bitmapToBase64(frameData);
         Map<String, String> requestDataMap=new HashMap<>();
@@ -80,19 +80,20 @@ public class ScoreGetHelp {
             Log.d("PoemGetHelp ","execute error");
         }
         if (bean==null){
-            rs.put("score","classify: loading"+"\n"+
-                    "line score: loading"+"\n"+
-                    "score: loading"+"\n"
+            rs.put("score",
+                    "图片分类: 加载中"+"\n"+
+                    "线条评分: 加载中"+"\n"+
+                    "图片评分: 加载中"+"\n"
             );
             rs.put("suggest_direct", DirectSuggest.SUGGEST_DIRECT.CENTER);
         }else {
-            rs.put("score","classify: "+bean.getClassify()+"\n"+
-                    "line score: "+bean.getLine_score()+"\n"+
-                    "score: "+bean.getScore()+"\n"
+            rs.put("score",
+                    "图片分类: "+bean.getClassify()+"\n"+
+                    "线条评分: "+bean.getLine_score()+"\n"+
+                    "图片评分: "+bean.getScore()+"\n"
             );
             rs.put("suggest_direct", DirectSuggest.SUGGEST_DIRECT.values()[Integer.parseInt(bean.getBest())]);
         }
-        //TODO end
 
         return rs;
     }

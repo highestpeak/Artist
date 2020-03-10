@@ -19,7 +19,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
         /*
-        设定设置的文字颜色未白色
+        设定设置的文字颜色为白色
          */
         getActivity().setTheme(R.style.PreferenceTheme);
         /*

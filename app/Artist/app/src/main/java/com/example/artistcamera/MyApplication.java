@@ -31,10 +31,10 @@ public class MyApplication extends Application {
         //设置GalleryFinal主题
         //ThemeConfig.CYAN
         ThemeConfig theme = new ThemeConfig.Builder()
-                .setTitleBarBgColor(Color.rgb(0xFF, 0x57, 0x22))
-                .setTitleBarTextColor(Color.BLACK)
-                .setTitleBarIconColor(Color.BLACK)
-                .setFabNornalColor(Color.RED)
+                .setTitleBarBgColor(Color.rgb(30, 178, 166))
+                .setTitleBarTextColor(Color.WHITE)
+                .setTitleBarIconColor(Color.WHITE)
+                .setFabNornalColor(Color.rgb(30, 178, 166))
                 .setFabPressedColor(Color.BLUE)
                 .setCheckNornalColor(Color.WHITE)
                 .setCheckSelectedColor(Color.BLACK)

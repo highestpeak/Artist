@@ -17,7 +17,6 @@ import android.widget.RadioGroup;
 
 import android.app.Fragment;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.example.artistcamera.R;
 import com.zomato.photofilters.SampleFilters;
@@ -40,20 +39,19 @@ public class FilterFragment extends Fragment {
     @BindView(R.id.filter_button_group)
     RadioGroup filterButtonGroup;
     private FilterButton[] filterButtons = {
-            // todo 更改名字和对应图片
-            new FilterButton("原图", R.drawable.filter_1_pressed, new GreyScaleFilter()),
-            new FilterButton("早安", R.drawable.filter_2_pressed, new InvertFilter()),
-            new FilterButton("清纯", R.drawable.filter_3_pressed, new RGB2BGRFilter()),
-            new FilterButton("草莓", R.drawable.filter_4_pressed, new BlackWhiteFilter()),
-            new FilterButton("草莓", R.drawable.filter_4_pressed, new BrightFilter()),
-            new FilterButton("草莓", R.drawable.filter_4_pressed, new VintagePinholeFilter()),
-            new FilterButton("草莓", R.drawable.filter_4_pressed, new KodachromeFilter()),
-            new FilterButton("草莓", R.drawable.filter_4_pressed, new TechnicolorFilter()),
-            new FilterButton("草莓", R.drawable.filter_4_pressed, new StarLitFilter()),
-            new FilterButton("草莓", R.drawable.filter_4_pressed, new BlueMessFilter()),
-            new FilterButton("草莓", R.drawable.filter_4_pressed, new AweStruckVibeFilter()),
-            new FilterButton("草莓", R.drawable.filter_4_pressed, new LimeStutterFilter()),
-            new FilterButton("夏威夷", R.drawable.filter_7_pressed, new NightWhisperFilter()),
+            new FilterButton("灰度", R.drawable.filter_greyscale_pressed, new GreyScaleFilter()),
+            new FilterButton("反色", R.drawable.filter_invert_pressed, new InvertFilter()),
+            new FilterButton("RGB2BGR", R.drawable.filter_rgb2bgr_pressed, new RGB2BGRFilter()),
+            new FilterButton("黑白", R.drawable.filter_blackwhite_pressed, new BlackWhiteFilter()),
+            new FilterButton("高亮", R.drawable.filter_bright_pressed, new BrightFilter()),
+            new FilterButton("复古", R.drawable.filter_vintagepinhole_pressed, new VintagePinholeFilter()),
+            new FilterButton("柯达", R.drawable.filter_kodachrome_pressed, new KodachromeFilter()),
+            new FilterButton("彩色", R.drawable.filter_technicolor_pressed, new TechnicolorFilter()),
+            new FilterButton("星际", R.drawable.filter_starlit_pressed, new StarLitFilter()),
+            new FilterButton("蓝影", R.drawable.filter_bluemess_pressed, new BlueMessFilter()),
+            new FilterButton("震撼", R.drawable.filter_awestruckvibe_pressed, new AweStruckVibeFilter()),
+            new FilterButton("默语", R.drawable.filter_limestutter_pressed, new LimeStutterFilter()),
+            new FilterButton("夜雨", R.drawable.filter_nightwhisper_pressed, new NightWhisperFilter()),
     };
     Unbinder unbinder;
 
@@ -76,9 +74,12 @@ public class FilterFragment extends Fragment {
         Filter myFilter = new Filter();
         myFilter.addSubFilter(new BrightnessSubFilter(30));
         myFilter.addSubFilter(new ContrastSubFilter(1.1f));
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inMutable = true;
-//        Bitmap inputImage = BitmapFactory.decodeResource(context.getResources(),R.drawable.sample,options);
+        //
+//        BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inMutable = true;
+//        Bitmap inputImage = BitmapFactory.decodeResource(context.getResources(),R.drawable.origin,options);
+//        ImageView imageView=new ImageView(context);
+        //
 
         for (FilterButton filterButton : filterButtons) {
             RadioButton radioButton = new RadioButton(context);
@@ -88,9 +89,8 @@ public class FilterFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     filterButton.filterProcess.process(filteredPhoto);
-//                    Bitmap outputImage = SampleFilters.getBlueMessFilter().processFilter(
-//                            inputImage.copy(inputImage.getConfig(),true));
-//                    filteredPhoto.setImageBitmap(outputImage);
+//                    imageView.setImageBitmap(inputImage);
+//                    filterButton.filterProcess.process(imageView);
                 }
             });
 

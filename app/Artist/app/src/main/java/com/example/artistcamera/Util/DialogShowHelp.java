@@ -85,8 +85,8 @@ public class DialogShowHelp {
         //---
 
         dialog = layoutDialog.create();
-        final Window window = dialog.getWindow();
-        Objects.requireNonNull(window).setBackgroundDrawable(new ColorDrawable(0));
+//        final Window window = dialog.getWindow();
+//        Objects.requireNonNull(window).setBackgroundDrawable(new ColorDrawable(0));
         dialogBtnConfirm .setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

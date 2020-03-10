@@ -19,7 +19,7 @@
             android:padding="5dp">
 
             <TextView
-                android:text="Contrast"
+                android:text="@string/edit_popup_contrast"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:layout_gravity="center_vertical"
@@ -45,7 +45,7 @@
             android:padding="5dp">
 
             <TextView
-                android:text="Brightness"
+                android:text="@string/edit_popup_brightness"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:layout_gravity="center_vertical"
@@ -71,7 +71,7 @@
             android:padding="5dp">
 
             <TextView
-                android:text="Saturation"
+                android:text="@string/edit_popup_saturation"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:layout_gravity="center_vertical"
